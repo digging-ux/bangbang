@@ -5,6 +5,23 @@
 document.addEventListener('DOMContentLoaded', function() {
     // === Mobile Menu Toggle ===
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const GOOGLE_FORMS_CONFIG = {
+    formUrl: 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse', // ← FORM_ID 변경
+    entries: {
+        name: 'entry.120540713',           // ← 실제 Entry ID로 변경
+        phone: 'entry.1160651997',          // ← 실제 Entry ID로 변경
+        email: 'entry.1612750435',          // ← 실제 Entry ID로 변경
+        brandName: 'entry.1641054354',      // ← 실제 Entry ID로 변경
+        category: 'entry.1904559935',       // ← 실제 Entry ID로 변경
+        businessStatus: 'entry.1234567890', // ← 실제 Entry ID로 변경
+        package: 'entry.646061378',        // ← 실제 Entry ID로 변경
+        idea: 'entry.639993047',           // ← 실제 Entry ID로 변경
+        motivation: 'entry.1234567890',     // ← 실제 Entry ID로 변경
+        startDate: 'entry.1551752735',      // ← 실제 Entry ID로 변경
+        referral: 'entry.1234567890'        // ← 실제 Entry ID로 변경
+    }
+};
+
     const navMenu = document.getElementById('navMenu');
     
     if (mobileMenuToggle && navMenu) {
