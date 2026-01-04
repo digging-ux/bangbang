@@ -1,4 +1,4 @@
-  1	// ===========================
+     1	// ===========================
      2	// 방방곡곡 (BangBang GoGog) JavaScript
      3	// Google Forms 연동 버전
      4	// ===========================
@@ -7,17 +7,17 @@
      7	const GOOGLE_FORMS_CONFIG = {
      8	    formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSeVnXm_YOUR_FORM_ID_HERE/formResponse',
      9	    entries: {
-    10	        name: 'entry.120540713',           // 이름
-    11	        phone: 'entry.1160651997',          // 전화번호
-    12	        email: 'entry.1612750435',          // 이메일
-    13	        brandName: 'entry.1641054354',      // 브랜드명
-    14	        category: 'entry.1904559935',       // 카테고리
-    15	        businessStatus: 'entry.YOUR_ENTRY_ID', // 사업자 여부
-    16	        package: 'entry.646061378',        // 패키지
-    17	        idea: 'entry.639993047',           // 사업 아이디어
-    18	        motivation: 'entry.1509700588',     // 지원 동기
-    19	        startDate: 'entry.1551752735',      // 희망 입점 시기
-    20	        referral: 'entry.966790486'        // 유입 경로
+    10	        name: 'entry.120540713',           
+    11	        phone: 'entry.1160651997',          
+    12	        email: 'entry.1612750435',          
+    13	        brandName: 'entry.1641054354',      
+    14	        category: 'entry.1904559935',       
+    15	        businessStatus: 'entry.YOUR_ENTRY_ID', 
+    16	        package: 'entry.646061378',        
+    17	        idea: 'entry.639993047',           
+    18	        motivation: 'entry.1509700588',     
+    19	        startDate: 'entry.1551752735',     
+    20	        referral: 'entry.966790486'       
     21	    }
     22	};
     23	
