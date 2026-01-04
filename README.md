@@ -174,7 +174,7 @@ hello@bangbanggogog.com  →  실제 이메일
 
 `index.html`에서 검색:
 - "20만원" → 원하는 가격
-- "50만원" → 원하는 가격
+- "70만원" → 원하는 가격
 
 ---
 
@@ -189,13 +189,13 @@ hello@bangbanggogog.com  →  실제 이메일
 ## 📞 문의
 
 ### 방방곡곡
-- **주소**: 경남 진주시 진주대로 501 (진주성 앞)
-- **전화**: 010-0000-0000
-- **이메일**: hello@bangbanggogog.com
+- **주소**: 경남 진주시 남강로625번길 7 (진주성 앞)
+- **전화**: 010-7940-7491
+- **이메일**: digging@studiodigging.com
 - **운영**: 스튜디오디깅 (Studio Digging)
 
 ### 입점 문의
-웹사이트의 [입점 신청 폼](https://digging-ux.github.io/bangbang/#apply)을 작성해주시면 1-2일 내 연락드립니다.
+웹사이트의 [입점 신청 폼](https://digging-ux.github.io/bangbang/#apply)을 작성해주시면 1-3일 내 연락드립니다.
 
 ---
 
@@ -326,7 +326,7 @@ bangbang.exportApplicationsCSV()
 
 ## 🌟 감사의 말
 
-이 프로젝트는 진주 지역의 예비 창업자들을 위해 만들어졌습니다.  
+이 프로젝트는 진주 지역의 예비 창업자와 초기창업자들을 위해 만들어졌습니다.  
 여러분의 꿈을 응원합니다! 🚀
 
 ---
@@ -342,7 +342,7 @@ bangbang.exportApplicationsCSV()
 
 ---
 
-**마지막 업데이트**: 2024년 1월  
+**마지막 업데이트**: 2026년 1월  
 **버전**: 2.0.0 (이미지 문제 해결)  
 **제작**: 스튜디오디깅 (Studio Digging)
 
