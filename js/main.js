@@ -481,3 +481,4 @@ window.bangbang = {
 };
 
 console.log('%cAdmin 기능: console에서 bangbang.getApplications() 또는 bangbang.exportApplicationsCSV() 실행', 'color: #999; font-size: 11px; font-style: italic;');
+Google Forms 연동 코드 추가
