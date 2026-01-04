@@ -1,15 +1,4 @@
-# robots.txt for 방방곡곡 (BangBangGoGog)
-# https://bangbanggogog.com
-
 User-agent: *
 Allow: /
 
-# Disallow admin pages if any
-Disallow: /admin/
-Disallow: /private/
-
-# Sitemap location
-Sitemap: https://bangbanggogog.com/sitemap.xml
-
-# Crawl-delay for polite crawling
-Crawl-delay: 1
+Sitemap: https://digging-ux.github.io/bangbang/sitemap.xml

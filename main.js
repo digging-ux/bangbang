@@ -1,371 +1,410 @@
-/**
- * 방방곡곡 입점 신청 랜딩 페이지
- * 주요 기능: 스크롤 애니메이션, 폼 검증, 모바일 메뉴, FAQ 토글
- */
+// ===========================
+// 방방곡곡 (BangBang GoGog) JavaScript
+// ===========================
 
-// DOM 요소 선택
-const navbar = document.getElementById('navbar');
-const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-const navMenu = document.getElementById('navMenu');
-const floatingCta = document.getElementById('floatingCta');
-const applyForm = document.getElementById('applyForm');
-const successModal = document.getElementById('successModal');
-const closeModal = document.getElementById('closeModal');
-
-// ==================== 네비게이션 스크롤 효과 ====================
-let lastScrollTop = 0;
-window.addEventListener('scroll', () => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+document.addEventListener('DOMContentLoaded', function() {
+    // === Mobile Menu Toggle ===
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const navMenu = document.getElementById('navMenu');
     
-    // 네비게이션 배경 효과
-    if (scrollTop > 100) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
-    }
-    
-    // Floating CTA 버튼 표시/숨김
-    if (scrollTop > 500) {
-        floatingCta.classList.add('show');
-    } else {
-        floatingCta.classList.remove('show');
-    }
-    
-    lastScrollTop = scrollTop;
-});
-
-// ==================== 모바일 메뉴 토글 ====================
-mobileMenuToggle.addEventListener('click', () => {
-    navMenu.classList.toggle('active');
-    const icon = mobileMenuToggle.querySelector('i');
-    
-    if (navMenu.classList.contains('active')) {
-        icon.classList.remove('fa-bars');
-        icon.classList.add('fa-times');
-    } else {
-        icon.classList.remove('fa-times');
-        icon.classList.add('fa-bars');
-    }
-});
-
-// 메뉴 링크 클릭 시 모바일 메뉴 닫기
-const navLinks = navMenu.querySelectorAll('a');
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
-            navMenu.classList.remove('active');
-            const icon = mobileMenuToggle.querySelector('i');
-            icon.classList.remove('fa-times');
-            icon.classList.add('fa-bars');
-        }
-    });
-});
-
-// ==================== 스크롤 애니메이션 ====================
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-        }
-    });
-}, observerOptions);
-
-// 애니메이션 대상 요소 관찰
-const animatedElements = document.querySelectorAll('.slide-in-left, .slide-in-right, .slide-in-up');
-animatedElements.forEach(el => observer.observe(el));
-
-// ==================== FAQ 토글 ====================
-const faqItems = document.querySelectorAll('.faq-item');
-
-faqItems.forEach(item => {
-    const question = item.querySelector('.faq-question');
-    
-    question.addEventListener('click', () => {
-        // 현재 아이템이 활성화되어 있는지 확인
-        const isActive = item.classList.contains('active');
-        
-        // 모든 FAQ 아이템 닫기
-        faqItems.forEach(faqItem => {
-            faqItem.classList.remove('active');
+    if (mobileMenuToggle && navMenu) {
+        mobileMenuToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            const icon = this.querySelector('i');
+            if (navMenu.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
         });
         
-        // 클릭된 아이템이 비활성화 상태였다면 활성화
-        if (!isActive) {
-            item.classList.add('active');
-        }
+        // Close mobile menu when clicking a link
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            });
+        });
+    }
+    
+    // === Sticky Navbar ===
+    const navbar = document.getElementById('navbar');
+    if (navbar) {
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                navbar.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+            } else {
+                navbar.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+            }
+        });
+    }
+    
+    // === Smooth Scrolling ===
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const navbarHeight = navbar ? navbar.offsetHeight : 0;
+                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
     });
-});
-
-// ==================== 폼 검증 및 제출 ====================
-
-// 전화번호 포맷팅
-const phoneInput = document.getElementById('phone');
-phoneInput.addEventListener('input', (e) => {
-    let value = e.target.value.replace(/[^0-9]/g, '');
     
-    if (value.length > 3 && value.length <= 7) {
-        value = value.slice(0, 3) + '-' + value.slice(3);
-    } else if (value.length > 7) {
-        value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11);
-    }
+    // === Scroll Animations ===
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
     
-    e.target.value = value;
-});
-
-// 텍스트 영역 글자 수 카운터
-const ideaTextarea = document.getElementById('idea');
-const charCount = document.querySelector('.char-count');
-
-ideaTextarea.addEventListener('input', (e) => {
-    const length = e.target.value.length;
-    charCount.textContent = `${length} / 500자`;
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
     
-    if (length > 500) {
-        charCount.style.color = 'var(--primary-color)';
-    } else {
-        charCount.style.color = 'var(--gray)';
-    }
-});
-
-// 날짜 입력 최소값 설정 (오늘 날짜)
-const startDateInput = document.getElementById('startDate');
-const today = new Date().toISOString().split('T')[0];
-startDateInput.setAttribute('min', today);
-
-// 폼 검증 함수
-function validateForm(formData) {
-    const errors = [];
+    // Animate elements on scroll
+    const animatedElements = document.querySelectorAll('.package-card, .benefit-card, .process-step, .story-card, .faq-item, .about-item');
+    animatedElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
     
-    // 이름 검증
-    if (formData.get('name').trim().length < 2) {
-        errors.push('이름을 2글자 이상 입력해주세요.');
-    }
-    
-    // 전화번호 검증
-    const phone = formData.get('phone').replace(/[^0-9]/g, '');
-    if (phone.length < 10 || phone.length > 11) {
-        errors.push('올바른 전화번호를 입력해주세요.');
-    }
-    
-    // 이메일 검증
-    const email = formData.get('email');
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        errors.push('올바른 이메일 주소를 입력해주세요.');
-    }
-    
-    // 브랜드명 검증
-    if (formData.get('brandName').trim().length < 2) {
-        errors.push('브랜드명을 2글자 이상 입력해주세요.');
-    }
-    
-    // 카테고리 검증
-    if (!formData.get('category')) {
-        errors.push('카테고리를 선택해주세요.');
-    }
-    
-    // 패키지 검증
-    if (!formData.get('package')) {
-        errors.push('희망 패키지를 선택해주세요.');
-    }
-    
-    // 입점 시기 검증
-    if (!formData.get('startDate')) {
-        errors.push('희망 입점 시기를 선택해주세요.');
-    }
-    
-    // 사업 아이디어 검증
-    const idea = formData.get('idea').trim();
-    if (idea.length < 100) {
-        errors.push('사업 아이디어를 100자 이상 작성해주세요.');
-    }
-    if (idea.length > 500) {
-        errors.push('사업 아이디어는 500자를 초과할 수 없습니다.');
-    }
-    
-    // 약관 동의 검증
-    if (!formData.get('agree')) {
-        errors.push('개인정보 처리방침 및 이용약관에 동의해주세요.');
-    }
-    
-    return errors;
-}
-
-// 폼 제출 처리
-applyForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    // 폼 데이터 수집
-    const formData = new FormData(applyForm);
-    
-    // 유효성 검증
-    const errors = validateForm(formData);
-    
-    if (errors.length > 0) {
-        alert('입력 내용을 확인해주세요:\n\n' + errors.join('\n'));
-        return;
-    }
-    
-    // 제출 버튼 비활성화
-    const submitButton = applyForm.querySelector('button[type="submit"]');
-    const originalText = submitButton.innerHTML;
-    submitButton.disabled = true;
-    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 제출 중...';
-    
-    try {
-        // 폼 데이터를 객체로 변환
-        const data = {
-            name: formData.get('name'),
-            phone: formData.get('phone'),
-            email: formData.get('email'),
-            brandName: formData.get('brandName'),
-            category: formData.get('category'),
-            sns: formData.get('sns'),
-            package: formData.get('package'),
-            startDate: formData.get('startDate'),
-            idea: formData.get('idea'),
-            submittedAt: new Date().toISOString()
-        };
-        
-        // 실제 환경에서는 여기서 서버로 데이터 전송
-        // await fetch('/api/applications', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(data)
-        // });
-        
-        // 데모용: 로컬 스토리지에 저장
-        const applications = JSON.parse(localStorage.getItem('applications') || '[]');
-        applications.push(data);
-        localStorage.setItem('applications', JSON.stringify(applications));
-        
-        // 콘솔에 데이터 출력 (개발용)
-        console.log('신청 데이터:', data);
-        
-        // 짧은 지연 후 성공 처리 (실제 서버 응답 시뮬레이션)
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // 폼 초기화
-        applyForm.reset();
-        charCount.textContent = '0 / 500자';
-        
-        // 성공 모달 표시
-        successModal.classList.add('show');
-        
-        // 페이지 최상단으로 스크롤
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        
-    } catch (error) {
-        console.error('신청 중 오류 발생:', error);
-        alert('신청 중 오류가 발생했습니다. 다시 시도해주세요.');
-    } finally {
-        // 제출 버튼 다시 활성화
-        submitButton.disabled = false;
-        submitButton.innerHTML = originalText;
-    }
-});
-
-// 성공 모달 닫기
-closeModal.addEventListener('click', () => {
-    successModal.classList.remove('show');
-});
-
-// 모달 배경 클릭 시 닫기
-successModal.addEventListener('click', (e) => {
-    if (e.target === successModal) {
-        successModal.classList.remove('show');
-    }
-});
-
-// ESC 키로 모달 닫기
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && successModal.classList.contains('show')) {
-        successModal.classList.remove('show');
-    }
-});
-
-// ==================== 부드러운 스크롤 ====================
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        const href = this.getAttribute('href');
-        
-        // 빈 해시나 모달 링크는 제외
-        if (href === '#' || href === '#!') {
-            e.preventDefault();
-            return;
-        }
-        
-        const target = document.querySelector(href);
-        if (target) {
-            e.preventDefault();
-            const navbarHeight = navbar.offsetHeight;
-            const targetPosition = target.offsetTop - navbarHeight;
+    // === FAQ Accordion ===
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        question.addEventListener('click', () => {
+            // Close other items
+            faqItems.forEach(otherItem => {
+                if (otherItem !== item && otherItem.classList.contains('active')) {
+                    otherItem.classList.remove('active');
+                }
+            });
             
-            window.scrollTo({
-                top: targetPosition,
-                behavior: 'smooth'
+            // Toggle current item
+            item.classList.toggle('active');
+        });
+    });
+    
+    // === Form Handling ===
+    const applyForm = document.getElementById('applyForm');
+    if (applyForm) {
+        // Phone number formatting
+        const phoneInput = document.getElementById('phone');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 11) value = value.slice(0, 11);
+                
+                if (value.length > 6) {
+                    e.target.value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7);
+                } else if (value.length > 3) {
+                    e.target.value = value.slice(0, 3) + '-' + value.slice(3);
+                } else {
+                    e.target.value = value;
+                }
             });
         }
-    });
-});
-
-// ==================== 페이지 로드 애니메이션 ====================
-window.addEventListener('load', () => {
-    // 히어로 섹션 페이드인
-    const heroContent = document.querySelector('.hero-content');
-    if (heroContent) {
-        heroContent.style.opacity = '1';
+        
+        // Character counter for idea textarea
+        const ideaTextarea = document.getElementById('idea');
+        const ideaCount = document.getElementById('ideaCount');
+        if (ideaTextarea && ideaCount) {
+            ideaTextarea.addEventListener('input', function() {
+                const count = this.value.length;
+                ideaCount.textContent = count;
+                
+                if (count > 500) {
+                    this.value = this.value.substring(0, 500);
+                    ideaCount.textContent = '500';
+                }
+            });
+        }
+        
+        // Form validation and submission
+        applyForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Basic validation
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const brandName = document.getElementById('brandName').value.trim();
+            const category = document.getElementById('category').value;
+            const packageType = document.querySelector('input[name="package"]:checked');
+            const idea = document.getElementById('idea').value.trim();
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            
+            if (!name) {
+                alert('이름을 입력해주세요.');
+                document.getElementById('name').focus();
+                return;
+            }
+            
+            if (!phone || phone.length < 12) {
+                alert('올바른 연락처를 입력해주세요.');
+                document.getElementById('phone').focus();
+                return;
+            }
+            
+            if (!email || !isValidEmail(email)) {
+                alert('올바른 이메일 주소를 입력해주세요.');
+                document.getElementById('email').focus();
+                return;
+            }
+            
+            if (!brandName) {
+                alert('브랜드명을 입력해주세요.');
+                document.getElementById('brandName').focus();
+                return;
+            }
+            
+            if (!category) {
+                alert('카테고리를 선택해주세요.');
+                document.getElementById('category').focus();
+                return;
+            }
+            
+            if (!packageType) {
+                alert('패키지를 선택해주세요.');
+                return;
+            }
+            
+            if (!idea || idea.length < 20) {
+                alert('사업 아이디어를 20자 이상 작성해주세요.');
+                document.getElementById('idea').focus();
+                return;
+            }
+            
+            if (!agreeTerms) {
+                alert('개인정보 수집 및 이용에 동의해주세요.');
+                document.getElementById('agreeTerms').focus();
+                return;
+            }
+            
+            // Save to localStorage (임시 저장)
+            const formData = {
+                name: name,
+                phone: phone,
+                email: email,
+                brandName: brandName,
+                category: category,
+                businessStatus: document.querySelector('input[name="businessStatus"]:checked').value,
+                package: packageType.value,
+                idea: idea,
+                motivation: document.getElementById('motivation').value.trim(),
+                startDate: document.getElementById('startDate').value,
+                referral: document.getElementById('referral').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Get existing applications
+            let applications = JSON.parse(localStorage.getItem('bangbangApplications') || '[]');
+            applications.push(formData);
+            localStorage.setItem('bangbangApplications', JSON.stringify(applications));
+            
+            // Show success modal
+            showSuccessModal();
+            
+            // Reset form
+            applyForm.reset();
+            if (ideaCount) ideaCount.textContent = '0';
+            
+            // In a real application, you would send this data to a server
+            console.log('Application submitted:', formData);
+        });
     }
     
-    // 스크롤 인디케이터 애니메이션
-    const scrollIndicator = document.querySelector('.scroll-indicator');
-    if (scrollIndicator) {
-        scrollIndicator.style.opacity = '1';
+    // Email validation
+    function isValidEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+    
+    // === Success Modal ===
+    const successModal = document.getElementById('successModal');
+    const modalClose = document.getElementById('modalClose');
+    
+    function showSuccessModal() {
+        if (successModal) {
+            successModal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+    
+    function hideSuccessModal() {
+        if (successModal) {
+            successModal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+    }
+    
+    if (modalClose) {
+        modalClose.addEventListener('click', hideSuccessModal);
+    }
+    
+    if (successModal) {
+        successModal.addEventListener('click', function(e) {
+            if (e.target === successModal) {
+                hideSuccessModal();
+            }
+        });
+    }
+    
+    // === Floating CTA Button ===
+    const floatingCTA = document.getElementById('floatingCTA');
+    if (floatingCTA) {
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                floatingCTA.classList.add('visible');
+            } else {
+                floatingCTA.classList.remove('visible');
+            }
+        });
+    }
+    
+    // === Stats Counter Animation ===
+    const stats = document.querySelectorAll('.stat-number');
+    let hasAnimated = false;
+    
+    function animateStats() {
+        if (hasAnimated) return;
+        
+        stats.forEach(stat => {
+            const target = parseInt(stat.textContent);
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    stat.textContent = target + (stat.textContent.includes('.') ? '.0' : '+');
+                    clearInterval(timer);
+                } else {
+                    stat.textContent = Math.floor(current) + (stat.textContent.includes('.') ? '.0' : '+');
+                }
+            }, 16);
+        });
+        
+        hasAnimated = true;
+    }
+    
+    // Trigger stats animation when hero section is visible
+    const heroSection = document.querySelector('.hero');
+    if (heroSection) {
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateStats();
+                }
+            });
+        }, { threshold: 0.3 });
+        
+        statsObserver.observe(heroSection);
+    }
+    
+    // === Auto-save Form Data ===
+    const formInputs = applyForm ? applyForm.querySelectorAll('input, select, textarea') : [];
+    formInputs.forEach(input => {
+        // Load saved data
+        const savedValue = localStorage.getItem('form_' + input.id);
+        if (savedValue && input.type !== 'checkbox' && input.type !== 'radio') {
+            input.value = savedValue;
+        }
+        
+        // Save on change
+        input.addEventListener('change', function() {
+            if (this.type !== 'checkbox' && this.type !== 'radio') {
+                localStorage.setItem('form_' + this.id, this.value);
+            }
+        });
+    });
+    
+    // Clear saved form data after successful submission
+    function clearFormStorage() {
+        formInputs.forEach(input => {
+            localStorage.removeItem('form_' + input.id);
+        });
+    }
+    
+    // === Package Card Hover Effect ===
+    const packageCards = document.querySelectorAll('.package-card');
+    packageCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-10px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+    
+    // === Active Nav Link Highlight ===
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (window.pageYOffset >= sectionTop - 100) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.style.borderBottomColor = 'transparent';
+            link.style.color = 'var(--text-color)';
+            if (link.getAttribute('href') === '#' + current) {
+                link.style.borderBottomColor = 'var(--primary-color)';
+                link.style.color = 'var(--primary-color)';
+            }
+        });
+    });
+    
+    // === Console Welcome Message ===
+    console.log('%c🏪 방방곡곡에 오신 것을 환영합니다!', 'color: #FF6B35; font-size: 20px; font-weight: bold;');
+    console.log('%c✨ 20만원으로 시작하는 진주 로컬 비즈니스', 'color: #2C3E50; font-size: 14px;');
+    console.log('%c📞 문의: 010-0000-0000', 'color: #666; font-size: 12px;');
+    
+    // === Performance Monitoring (Development Only) ===
+    if (window.performance && window.performance.timing) {
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const perfData = window.performance.timing;
+                const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+                console.log('Page load time:', (pageLoadTime / 1000).toFixed(2) + 's');
+            }, 0);
+        });
     }
 });
 
-// ==================== 이미지 레이지 로딩 ====================
-if ('loading' in HTMLImageElement.prototype) {
-    const images = document.querySelectorAll('img[loading="lazy"]');
-    images.forEach(img => {
-        img.src = img.dataset.src || img.src;
-    });
-} else {
-    // 구형 브라우저를 위한 폴백
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js';
-    document.body.appendChild(script);
+// === Utility Functions ===
+
+// Format number with commas
+function formatNumber(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-// ==================== 관리자용 기능 (개발 환경) ====================
-// 콘솔에서 신청 데이터 확인
-window.viewApplications = function() {
-    const applications = JSON.parse(localStorage.getItem('applications') || '[]');
-    console.table(applications);
-    return applications;
-};
-
-window.clearApplications = function() {
-    localStorage.removeItem('applications');
-    console.log('모든 신청 데이터가 삭제되었습니다.');
-};
-
-// 개발 환경 안내
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    console.log('%c방방곡곡 입점 신청 페이지', 'font-size: 20px; font-weight: bold; color: #FF6B35;');
-    console.log('%c개발 환경 명령어:', 'font-size: 14px; font-weight: bold; color: #2C3E50;');
-    console.log('viewApplications() - 저장된 신청 데이터 확인');
-    console.log('clearApplications() - 신청 데이터 모두 삭제');
-}
-
-// ==================== 성능 최적화 ====================
-
-// 디바운스 함수
+// Debounce function for performance
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -378,66 +417,50 @@ function debounce(func, wait) {
     };
 }
 
-// 리사이즈 이벤트 최적화
-window.addEventListener('resize', debounce(() => {
-    // 리사이즈 시 필요한 작업
-    if (window.innerWidth > 768 && navMenu.classList.contains('active')) {
-        navMenu.classList.remove('active');
-        const icon = mobileMenuToggle.querySelector('i');
-        icon.classList.remove('fa-times');
-        icon.classList.add('fa-bars');
+// Throttle function for scroll events
+function throttle(func, limit) {
+    let inThrottle;
+    return function() {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
+// === Export for admin dashboard (future feature) ===
+function getApplications() {
+    return JSON.parse(localStorage.getItem('bangbangApplications') || '[]');
+}
+
+function exportApplicationsCSV() {
+    const applications = getApplications();
+    if (applications.length === 0) {
+        alert('저장된 신청서가 없습니다.');
+        return;
     }
-}, 250));
+    
+    let csv = 'Name,Phone,Email,Brand Name,Category,Package,Date\n';
+    applications.forEach(app => {
+        csv += `"${app.name}","${app.phone}","${app.email}","${app.brandName}","${app.category}","${app.package}","${app.timestamp}"\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'bangbang-applications.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
 
-// ==================== 접근성 개선 ====================
-
-// 포커스 가능한 요소들
-const focusableElements = 'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])';
-
-// 모달이 열릴 때 포커스 트랩
-successModal.addEventListener('click', (e) => {
-    if (successModal.classList.contains('show')) {
-        const focusable = successModal.querySelectorAll(focusableElements);
-        const firstFocusable = focusable[0];
-        const lastFocusable = focusable[focusable.length - 1];
-        
-        // Tab 키 처리
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Tab') {
-                if (e.shiftKey) {
-                    if (document.activeElement === firstFocusable) {
-                        lastFocusable.focus();
-                        e.preventDefault();
-                    }
-                } else {
-                    if (document.activeElement === lastFocusable) {
-                        firstFocusable.focus();
-                        e.preventDefault();
-                    }
-                }
-            }
-        });
-    }
-});
-
-// ==================== Google Analytics 연동 준비 ====================
-// 실제 배포 시 Google Analytics 코드 추가
-window.trackEvent = function(category, action, label) {
-    if (typeof gtag !== 'undefined') {
-        gtag('event', action, {
-            'event_category': category,
-            'event_label': label
-        });
-    }
-    console.log(`Event tracked: ${category} - ${action} - ${label}`);
+// Make functions available globally for console access
+window.bangbang = {
+    getApplications,
+    exportApplicationsCSV
 };
 
-// 주요 이벤트 추적
-document.querySelectorAll('.btn-primary').forEach(btn => {
-    btn.addEventListener('click', () => {
-        trackEvent('Button', 'Click', btn.textContent.trim());
-    });
-});
-
-// ==================== 초기화 완료 ====================
-console.log('방방곡곡 입점 신청 페이지가 로드되었습니다.');
+console.log('%cAdmin 기능: console에서 bangbang.getApplications() 또는 bangbang.exportApplicationsCSV() 실행', 'color: #999; font-size: 11px; font-style: italic;');
