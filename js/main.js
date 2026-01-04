@@ -315,229 +315,236 @@
    315	    }
    316	    
    317	    // === Success Modal ===
-   318	    const successModal = document.getElementById('successModal');
-   319	    const modalClose = document.getElementById('modalClose');
+   318	    const successModal = document.getElementById('successModal') || document.getElementById('success-modal');
+   319	    const modalClose = document.getElementById('modalClose') || document.getElementById('modal-close');
    320	    
    321	    function showSuccessModal() {
    322	        if (successModal) {
    323	            successModal.classList.add('show');
-   324	            document.body.style.overflow = 'hidden';
-   325	        }
-   326	    }
-   327	    
-   328	    function hideSuccessModal() {
-   329	        if (successModal) {
-   330	            successModal.classList.remove('show');
-   331	            document.body.style.overflow = 'auto';
-   332	        }
-   333	    }
-   334	    
-   335	    if (modalClose) {
-   336	        modalClose.addEventListener('click', hideSuccessModal);
-   337	    }
-   338	    
-   339	    if (successModal) {
-   340	        successModal.addEventListener('click', function(e) {
-   341	            if (e.target === successModal) {
-   342	                hideSuccessModal();
-   343	            }
-   344	        });
-   345	    }
-   346	    
-   347	    // === Floating CTA Button ===
-   348	    const floatingCTA = document.getElementById('floatingCTA');
-   349	    if (floatingCTA) {
-   350	        window.addEventListener('scroll', function() {
-   351	            if (window.scrollY > 300) {
-   352	                floatingCTA.classList.add('visible');
-   353	            } else {
-   354	                floatingCTA.classList.remove('visible');
-   355	            }
-   356	        });
-   357	    }
-   358	    
-   359	    // === Stats Counter Animation ===
-   360	    const stats = document.querySelectorAll('.stat-number');
-   361	    let hasAnimated = false;
-   362	    
-   363	    function animateStats() {
-   364	        if (hasAnimated) return;
-   365	        
-   366	        stats.forEach(stat => {
-   367	            const target = parseInt(stat.textContent);
-   368	            const duration = 2000;
-   369	            const increment = target / (duration / 16);
-   370	            let current = 0;
-   371	            
-   372	            const timer = setInterval(() => {
-   373	                current += increment;
-   374	                if (current >= target) {
-   375	                    stat.textContent = target + (stat.textContent.includes('.') ? '.0' : '+');
-   376	                    clearInterval(timer);
-   377	                } else {
-   378	                    stat.textContent = Math.floor(current) + (stat.textContent.includes('.') ? '.0' : '+');
-   379	                }
-   380	            }, 16);
-   381	        });
-   382	        
-   383	        hasAnimated = true;
-   384	    }
-   385	    
-   386	    // Trigger stats animation when hero section is visible
-   387	    const heroSection = document.querySelector('.hero');
-   388	    if (heroSection) {
-   389	        const statsObserver = new IntersectionObserver((entries) => {
-   390	            entries.forEach(entry => {
-   391	                if (entry.isIntersecting) {
-   392	                    animateStats();
-   393	                }
-   394	            });
-   395	        }, { threshold: 0.3 });
-   396	        
-   397	        statsObserver.observe(heroSection);
-   398	    }
-   399	    
-   400	    // === Auto-save Form Data ===
-   401	    const formInputs = applyForm ? applyForm.querySelectorAll('input, select, textarea') : [];
-   402	    formInputs.forEach(input => {
-   403	        // Load saved data
-   404	        const savedValue = localStorage.getItem('form_' + input.id);
-   405	        if (savedValue && input.type !== 'checkbox' && input.type !== 'radio') {
-   406	            input.value = savedValue;
-   407	        }
-   408	        
-   409	        // Save on change
-   410	        input.addEventListener('change', function() {
-   411	            if (this.type !== 'checkbox' && this.type !== 'radio') {
-   412	                localStorage.setItem('form_' + this.id, this.value);
-   413	            }
-   414	        });
-   415	    });
-   416	    
-   417	    // Clear saved form data after successful submission
-   418	    function clearFormStorage() {
-   419	        formInputs.forEach(input => {
-   420	            localStorage.removeItem('form_' + input.id);
+   324	            successModal.style.display = 'flex'; // 추가: display 설정
+   325	            document.body.style.overflow = 'hidden';
+   326	        }
+   327	    }
+   328	    
+   329	    // closeModal을 전역 함수로 만들기 (HTML에서 onclick으로 호출)
+   330	    window.closeModal = function() {
+   331	        if (successModal) {
+   332	            successModal.classList.remove('show');
+   333	            successModal.style.display = 'none'; // 추가: display 설정
+   334	            document.body.style.overflow = 'auto';
+   335	        }
+   336	    }
+   337	    
+   338	    function hideSuccessModal() {
+   339	        window.closeModal();
+   340	    }
+   341	    
+   342	    if (modalClose) {
+   343	        modalClose.addEventListener('click', hideSuccessModal);
+   344	    }
+   345	    
+   346	    if (successModal) {
+   347	        successModal.addEventListener('click', function(e) {
+   348	            if (e.target === successModal) {
+   349	                hideSuccessModal();
+   350	            }
+   351	        });
+   352	    }
+   353	    
+   354	    // === Floating CTA Button ===
+   355	    const floatingCTA = document.getElementById('floatingCTA') || document.getElementById('floating-cta');
+   356	    if (floatingCTA) {
+   357	        window.addEventListener('scroll', function() {
+   358	            if (window.scrollY > 300) {
+   359	                floatingCTA.classList.add('visible');
+   360	            } else {
+   361	                floatingCTA.classList.remove('visible');
+   362	            }
+   363	        });
+   364	    }
+   365	    
+   366	    // === Stats Counter Animation ===
+   367	    const stats = document.querySelectorAll('.stat-number');
+   368	    let hasAnimated = false;
+   369	    
+   370	    function animateStats() {
+   371	        if (hasAnimated) return;
+   372	        
+   373	        stats.forEach(stat => {
+   374	            const target = parseInt(stat.textContent);
+   375	            const duration = 2000;
+   376	            const increment = target / (duration / 16);
+   377	            let current = 0;
+   378	            
+   379	            const timer = setInterval(() => {
+   380	                current += increment;
+   381	                if (current >= target) {
+   382	                    stat.textContent = target + (stat.textContent.includes('.') ? '.0' : '+');
+   383	                    clearInterval(timer);
+   384	                } else {
+   385	                    stat.textContent = Math.floor(current) + (stat.textContent.includes('.') ? '.0' : '+');
+   386	                }
+   387	            }, 16);
+   388	        });
+   389	        
+   390	        hasAnimated = true;
+   391	    }
+   392	    
+   393	    // Trigger stats animation when hero section is visible
+   394	    const heroSection = document.querySelector('.hero');
+   395	    if (heroSection) {
+   396	        const statsObserver = new IntersectionObserver((entries) => {
+   397	            entries.forEach(entry => {
+   398	                if (entry.isIntersecting) {
+   399	                    animateStats();
+   400	                }
+   401	            });
+   402	        }, { threshold: 0.3 });
+   403	        
+   404	        statsObserver.observe(heroSection);
+   405	    }
+   406	    
+   407	    // === Auto-save Form Data ===
+   408	    const formInputs = applyForm ? applyForm.querySelectorAll('input, select, textarea') : [];
+   409	    formInputs.forEach(input => {
+   410	        // Load saved data
+   411	        const savedValue = localStorage.getItem('form_' + input.id);
+   412	        if (savedValue && input.type !== 'checkbox' && input.type !== 'radio') {
+   413	            input.value = savedValue;
+   414	        }
+   415	        
+   416	        // Save on change
+   417	        input.addEventListener('change', function() {
+   418	            if (this.type !== 'checkbox' && this.type !== 'radio') {
+   419	                localStorage.setItem('form_' + this.id, this.value);
+   420	            }
    421	        });
-   422	    }
+   422	    });
    423	    
-   424	    // === Package Card Hover Effect ===
-   425	    const packageCards = document.querySelectorAll('.package-card');
-   426	    packageCards.forEach(card => {
-   427	        card.addEventListener('mouseenter', function() {
-   428	            this.style.transform = 'translateY(-10px) scale(1.02)';
-   429	        });
-   430	        
-   431	        card.addEventListener('mouseleave', function() {
-   432	            this.style.transform = 'translateY(0) scale(1)';
-   433	        });
-   434	    });
-   435	    
-   436	    // === Active Nav Link Highlight ===
-   437	    const sections = document.querySelectorAll('section[id]');
-   438	    const navLinks = document.querySelectorAll('.nav-link');
-   439	    
-   440	    window.addEventListener('scroll', () => {
-   441	        let current = '';
-   442	        sections.forEach(section => {
-   443	            const sectionTop = section.offsetTop;
-   444	            const sectionHeight = section.clientHeight;
-   445	            if (window.pageYOffset >= sectionTop - 100) {
-   446	                current = section.getAttribute('id');
-   447	            }
-   448	        });
-   449	        
-   450	        navLinks.forEach(link => {
-   451	            link.style.borderBottomColor = 'transparent';
-   452	            link.style.color = 'var(--text-color)';
-   453	            if (link.getAttribute('href') === '#' + current) {
-   454	                link.style.borderBottomColor = 'var(--primary-color)';
-   455	                link.style.color = 'var(--primary-color)';
-   456	            }
-   457	        });
-   458	    });
-   459	    
-   460	    // === Console Welcome Message ===
-   461	    console.log('%c🏪 방방곡곡에 오신 것을 환영합니다!', 'color: #FF6B35; font-size: 20px; font-weight: bold;');
-   462	    console.log('%c✨ 20만원으로 시작하는 진주 로컬 비즈니스', 'color: #2C3E50; font-size: 14px;');
-   463	    console.log('%c📞 문의: 010-0000-0000', 'color: #666; font-size: 12px;');
-   464	    console.log('%c🔗 Google Forms 연동 완료', 'color: #27ae60; font-size: 12px; font-weight: bold;');
-   465	    
-   466	    // === Performance Monitoring (Development Only) ===
-   467	    if (window.performance && window.performance.timing) {
-   468	        window.addEventListener('load', function() {
-   469	            setTimeout(function() {
-   470	                const perfData = window.performance.timing;
-   471	                const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
-   472	                console.log('Page load time:', (pageLoadTime / 1000).toFixed(2) + 's');
-   473	            }, 0);
-   474	        });
-   475	    }
-   476	});
-   477	
-   478	// === Utility Functions ===
-   479	
-   480	// Format number with commas
-   481	function formatNumber(num) {
-   482	    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-   483	}
+   424	    // Clear saved form data after successful submission
+   425	    function clearFormStorage() {
+   426	        formInputs.forEach(input => {
+   427	            localStorage.removeItem('form_' + input.id);
+   428	        });
+   429	    }
+   430	    
+   431	    // === Package Card Hover Effect ===
+   432	    const packageCards = document.querySelectorAll('.package-card');
+   433	    packageCards.forEach(card => {
+   434	        card.addEventListener('mouseenter', function() {
+   435	            this.style.transform = 'translateY(-10px) scale(1.02)';
+   436	        });
+   437	        
+   438	        card.addEventListener('mouseleave', function() {
+   439	            this.style.transform = 'translateY(0) scale(1)';
+   440	        });
+   441	    });
+   442	    
+   443	    // === Active Nav Link Highlight ===
+   444	    const sections = document.querySelectorAll('section[id]');
+   445	    const navLinks = document.querySelectorAll('.nav-link');
+   446	    
+   447	    window.addEventListener('scroll', () => {
+   448	        let current = '';
+   449	        sections.forEach(section => {
+   450	            const sectionTop = section.offsetTop;
+   451	            const sectionHeight = section.clientHeight;
+   452	            if (window.pageYOffset >= sectionTop - 100) {
+   453	                current = section.getAttribute('id');
+   454	            }
+   455	        });
+   456	        
+   457	        navLinks.forEach(link => {
+   458	            link.style.borderBottomColor = 'transparent';
+   459	            link.style.color = 'var(--text-color)';
+   460	            if (link.getAttribute('href') === '#' + current) {
+   461	                link.style.borderBottomColor = 'var(--primary-color)';
+   462	                link.style.color = 'var(--primary-color)';
+   463	            }
+   464	        });
+   465	    });
+   466	    
+   467	    // === Console Welcome Message ===
+   468	    console.log('%c🏪 방방곡곡에 오신 것을 환영합니다!', 'color: #FF6B35; font-size: 20px; font-weight: bold;');
+   469	    console.log('%c✨ 20만원으로 시작하는 진주 로컬 비즈니스', 'color: #2C3E50; font-size: 14px;');
+   470	    console.log('%c📞 문의: 010-0000-0000', 'color: #666; font-size: 12px;');
+   471	    console.log('%c🔗 Google Forms 연동 완료', 'color: #27ae60; font-size: 12px; font-weight: bold;');
+   472	    
+   473	    // === Performance Monitoring (Development Only) ===
+   474	    if (window.performance && window.performance.timing) {
+   475	        window.addEventListener('load', function() {
+   476	            setTimeout(function() {
+   477	                const perfData = window.performance.timing;
+   478	                const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+   479	                console.log('Page load time:', (pageLoadTime / 1000).toFixed(2) + 's');
+   480	            }, 0);
+   481	        });
+   482	    }
+   483	});
    484	
-   485	// Debounce function for performance
-   486	function debounce(func, wait) {
-   487	    let timeout;
-   488	    return function executedFunction(...args) {
-   489	        const later = () => {
-   490	            clearTimeout(timeout);
-   491	            func(...args);
-   492	        };
-   493	        clearTimeout(timeout);
-   494	        timeout = setTimeout(later, wait);
-   495	    };
-   496	}
-   497	
-   498	// Throttle function for scroll events
-   499	function throttle(func, limit) {
-   500	    let inThrottle;
-   501	    return function() {
-   502	        const args = arguments;
-   503	        const context = this;
-   504	        if (!inThrottle) {
-   505	            func.apply(context, args);
-   506	            inThrottle = true;
-   507	            setTimeout(() => inThrottle = false, limit);
-   508	        }
-   509	    };
-   510	}
-   511	
-   512	// === Export for admin dashboard (future feature) ===
-   513	function getApplications() {
-   514	    return JSON.parse(localStorage.getItem('bangbangApplications') || '[]');
-   515	}
-   516	
-   517	function exportApplicationsCSV() {
-   518	    const applications = getApplications();
-   519	    if (applications.length === 0) {
-   520	        alert('저장된 신청서가 없습니다.');
-   521	        return;
-   522	    }
-   523	    
-   524	    let csv = 'Name,Phone,Email,Brand Name,Category,Package,Date\n';
-   525	    applications.forEach(app => {
-   526	        csv += `"${app.name}","${app.phone}","${app.email}","${app.brandName}","${app.category}","${app.package}","${app.timestamp}"\n`;
-   527	    });
-   528	    
-   529	    const blob = new Blob([csv], { type: 'text/csv' });
-   530	    const url = window.URL.createObjectURL(blob);
-   531	    const a = document.createElement('a');
-   532	    a.href = url;
-   533	    a.download = 'bangbang-applications.csv';
-   534	    a.click();
-   535	    window.URL.revokeObjectURL(url);
-   536	}
-   537	
-   538	// Make functions available globally for console access
-   539	window.bangbang = {
-   540	    getApplications,
-   541	    exportApplicationsCSV
-   542	};
-   543	
+   485	// === Utility Functions ===
+   486	
+   487	// Format number with commas
+   488	function formatNumber(num) {
+   489	    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+   490	}
+   491	
+   492	// Debounce function for performance
+   493	function debounce(func, wait) {
+   494	    let timeout;
+   495	    return function executedFunction(...args) {
+   496	        const later = () => {
+   497	            clearTimeout(timeout);
+   498	            func(...args);
+   499	        };
+   500	        clearTimeout(timeout);
+   501	        timeout = setTimeout(later, wait);
+   502	    };
+   503	}
+   504	
+   505	// Throttle function for scroll events
+   506	function throttle(func, limit) {
+   507	    let inThrottle;
+   508	    return function() {
+   509	        const args = arguments;
+   510	        const context = this;
+   511	        if (!inThrottle) {
+   512	            func.apply(context, args);
+   513	            inThrottle = true;
+   514	            setTimeout(() => inThrottle = false, limit);
+   515	        }
+   516	    };
+   517	}
+   518	
+   519	// === Export for admin dashboard (future feature) ===
+   520	function getApplications() {
+   521	    return JSON.parse(localStorage.getItem('bangbangApplications') || '[]');
+   522	}
+   523	
+   524	function exportApplicationsCSV() {
+   525	    const applications = getApplications();
+   526	    if (applications.length === 0) {
+   527	        alert('저장된 신청서가 없습니다.');
+   528	        return;
+   529	    }
+   530	    
+   531	    let csv = 'Name,Phone,Email,Brand Name,Category,Package,Date\n';
+   532	    applications.forEach(app => {
+   533	        csv += `"${app.name}","${app.phone}","${app.email}","${app.brandName}","${app.category}","${app.package}","${app.timestamp}"\n`;
+   534	    });
+   535	    
+   536	    const blob = new Blob([csv], { type: 'text/csv' });
+   537	    const url = window.URL.createObjectURL(blob);
+   538	    const a = document.createElement('a');
+   539	    a.href = url;
+   540	    a.download = 'bangbang-applications.csv';
+   541	    a.click();
+   542	    window.URL.revokeObjectURL(url);
+   543	}
+   544	
+   545	// Make functions available globally for console access
+   546	window.bangbang = {
+   547	    getApplications,
+   548	    exportApplicationsCSV
+   549	};
+   550	
