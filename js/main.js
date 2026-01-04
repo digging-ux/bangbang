@@ -122,7 +122,7 @@
    122	    });
    123	    
    124	    // === Form Handling ===
-   125	    const applyForm = document.getElementById('applyForm');
+   125	    const applyForm = document.getElementById('applyForm') || document.getElementById('apply-form');
    126	    if (applyForm) {
    127	        // Phone number formatting
    128	        const phoneInput = document.getElementById('phone');
